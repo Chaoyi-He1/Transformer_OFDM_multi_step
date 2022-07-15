@@ -1,0 +1,46 @@
+import torch
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+input_size = int(96 * 2)
+input_num_symbol = 32
+batch_size = 512
+output_size = 96
+vec_size = input_size * input_num_symbol
+type_position = vec_size
+num_classes = 2
+sig_shape = [-1, input_num_symbol, input_size]
+
+weight_decay = 0.8
+learning_rate = 0.1
+save_interval = 100
+max_epoch = 100
+
+embedded_dim = int(input_size / 2)
+num_heads = 8
+
+##-----activation-----
+coder_act = 'relu'
+MLP_act = 'relu'
+
+##-----file direction--
+training_data_path = './Data/mtx_B_30_35dB_reformat.csv'
+testing_data_path = './Data/mtx_B_20_25dB_reformat.csv'
+validation_data_path = './Data/mtx_B_20_25dB_reformat.csv'
+model_dir = './Model'
+Transformer_dir = model_dir + '/Transformer_whole'
+Transformer_weight_save_dir = Transformer_dir + '/weight_mtx'
+
+##-----encoder---------
+num_encoder_block = 4
+encoder_drop_rate = 0.5
+encoder_dense_dim = 1024
+encoder_norm_mode = 'layer'     #'batch' or 'layer'
+##-----decoder---------
+num_decoder_block = 4
+decoder_drop_rate = 0.1
+decoder_dense_dim = 2048
+decoder_norm_mode = 'layer'     #'batch' or 'layer'
+##-----LSTM---------
+LSTM_num_layers = 2
+LSTM_drop_rate = 0.5
+bidirectional_LSTM = True
