@@ -41,13 +41,13 @@ class Transformer_model(nn.Module):
         # predict = np.round(predict)
         for i in range(predict.shape[0]):
             predict[i, sum(predict[i, :, 0:32]) >= 16, 0:32] = torch.ones(32, dtype=torch.float, device=config.device)
-            predict[i, sum(predict[i, :, 0:32]) < 16, 0:32] = torch.ones(32, dtype=torch.float, device=config.device)
+            predict[i, sum(predict[i, :, 0:32]) < 16, 0:32] = torch.zeros(32, dtype=torch.float, device=config.device)
 
             predict[i, sum(predict[i, :, 0:32]) >= 16, 32:64] = torch.ones(32, dtype=torch.float, device=config.device)
-            predict[i, sum(predict[i, :, 0:32]) < 16, 32:64] = torch.ones(32, dtype=torch.float, device=config.device)
+            predict[i, sum(predict[i, :, 0:32]) < 16, 32:64] = torch.zeros(32, dtype=torch.float, device=config.device)
 
             predict[i, sum(predict[i, :, 0:32]) >= 16, 64:96] = torch.ones(32, dtype=torch.float, device=config.device)
-            predict[i, sum(predict[i, :, 0:32]) < 16, 64:96] = torch.ones(32, dtype=torch.float, device=config.device)
+            predict[i, sum(predict[i, :, 0:32]) < 16, 64:96] = torch.zeros(32, dtype=torch.float, device=config.device)
 
             if (predict[i] == target[i]).all():
                 acc += 1
