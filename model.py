@@ -108,7 +108,8 @@ class Transformer_model(nn.Module):
         # summary(self.Transformer_autoencoder, [(32, 256), (32, 256)])
         encoder_inputs = dic_data["training_input"]
         decoder_inputs = dic_data["training_type"]
-        decoder_inputs = np.concatenate((-1 * np.ones(encoder_inputs.shape[0]), decoder_inputs[:, 1:, :]), axis=1)
+        decoder_inputs = np.concatenate((-1 * np.ones(encoder_inputs.shape[0], 1, config.output_size),
+                                         decoder_inputs[:, 1:, :]), axis=1)
         y_train = dic_data["training_type"]
 
         num_samples = encoder_inputs.shape[0]
