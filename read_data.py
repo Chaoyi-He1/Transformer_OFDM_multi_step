@@ -6,11 +6,12 @@ import config
 def read_data(file_name):
     data = np.array(pd.read_csv(file_name, header=None))
     input_data = data[:, :config.vec_size].copy()
+    label = np.reshape(data[:, config.type_position:], (-1, config.input_num_symbol, config.output_size))
     # r, c = np.shape(input_data)
     # signal_type_one_hot = np.zeros([r, 2])
     # signal_type_one_hot[np.arange(r), (data[:, config.type_position]).astype(int)] = 1
     # spec = data[:, config.spectrum_use_position]
-    return input_data, data[:, config.type_position:].copy()
+    return input_data, label
 
 
 def reshape_data(data_in):

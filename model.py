@@ -103,11 +103,12 @@ class Transformer_model(nn.Module):
         self.Transformer_autoencoder.train()
         self.writer.add_graph(self.Transformer_autoencoder, [torch.rand((1, 32, config.input_size), device=config.device
                                                                         , dtype=torch.float),
-                                                             torch.rand((1, 32, config.input_size), device=config.device
-                                                                        , dtype=torch.float)])
+                                                             torch.rand((1, 32, config.output_size),
+                                                                        device=config.device, dtype=torch.float)])
         # summary(self.Transformer_autoencoder, [(32, 256), (32, 256)])
         encoder_inputs = dic_data["training_input"]
-        decoder_inputs = dic_data["training_input"]
+        decoder_inputs = dic_data["training_type"]
+        decoder_inputs = np.concatenate((-1 * np.ones(encoder_inputs.shape[0]), decoder_inputs[:, 1:, :]), axis=1)
         y_train = dic_data["training_type"]
 
         num_samples = encoder_inputs.shape[0]

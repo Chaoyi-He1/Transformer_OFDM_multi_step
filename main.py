@@ -23,7 +23,7 @@ def data_reader(train=False, val=False, test=False):
 
 
 if __name__ == '__main__':
-    dic_data = data_reader(train=True, val=True, test=False)
+    dic_data = data_reader(train=False, val=False, test=False)
 
     Transformer_model = model.Transformer_model()
     Transformer_model.train(dic_data=dic_data)

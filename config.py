@@ -23,9 +23,9 @@ coder_act = 'relu'
 MLP_act = 'relu'
 
 ##-----file direction--
-training_data_path = './Data/mtx_B_30_35dB_reformat.csv'
-testing_data_path = './Data/mtx_B_20_25dB_reformat.csv'
-validation_data_path = './Data/mtx_B_20_25dB_reformat.csv'
+training_data_path = './Data/mtx_32f_B_20_25dB.csv'
+testing_data_path = './Data/mtx_32f_B_20_25dB.csv'
+validation_data_path = './Data/mtx_32f_B_20_25dB.csv'
 model_dir = './Model'
 Transformer_dir = model_dir + '/Transformer_whole'
 Transformer_weight_save_dir = Transformer_dir + '/weight_mtx'
