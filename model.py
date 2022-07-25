@@ -40,14 +40,16 @@ class Transformer_model(nn.Module):
         acc = 0
         # predict = np.round(predict)
         for i in range(predict.shape[0]):
-            predict[i, sum(predict[i, :, 0:32]) >= 16, 0:32] = torch.ones(32, dtype=torch.float, device=config.device)
-            predict[i, sum(predict[i, :, 0:32]) < 16, 0:32] = torch.zeros(32, dtype=torch.float, device=config.device)
+            a = np.sum(predict[i, :, 0:32], axis=1)
+            b = sum(predict[i, 0, 0:32])
+            predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 0:32] = np.ones(32)
+            predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 0:32] = np.zeros(32)
 
-            predict[i, sum(predict[i, :, 0:32]) >= 16, 32:64] = torch.ones(32, dtype=torch.float, device=config.device)
-            predict[i, sum(predict[i, :, 0:32]) < 16, 32:64] = torch.zeros(32, dtype=torch.float, device=config.device)
+            predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 32:64] = np.ones(32)
+            predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 32:64] = np.zeros(32)
 
-            predict[i, sum(predict[i, :, 0:32]) >= 16, 64:96] = torch.ones(32, dtype=torch.float, device=config.device)
-            predict[i, sum(predict[i, :, 0:32]) < 16, 64:96] = torch.zeros(32, dtype=torch.float, device=config.device)
+            predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 64:96] = np.ones(32)
+            predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 64:96] = np.zeros(32)
 
             if (predict[i] == target[i]).all():
                 acc += 1
@@ -86,16 +88,14 @@ class Transformer_model(nn.Module):
                                                            (-1, config.input_num_symbol, config.embedded_dim))))
             val_perform.append(val_out.detach().cpu().numpy())
 
-        train_perform = torch.reshape(torch.tensor(np.array(train_perform), device=config.device, dtype=torch.float),
-                                      shape=(num_test, config.input_num_symbol, config.output_size))
-        val_perform = torch.reshape(torch.tensor(np.array(val_perform), device=config.device, dtype=torch.float),
-                                    shape=(num_test, config.input_num_symbol, config.output_size))
+        train_perform = np.reshape(np.array(train_perform),
+                                   newshape=(num_test, config.input_num_symbol, config.output_size))
+        val_perform = np.reshape(np.array(val_perform),
+                                 newshape=(num_test, config.input_num_symbol, config.output_size))
 
-        train_acc = self.accuracy_calculate(train_perform, torch.tensor(dic_data["training_type"][:num_test, :, :],
-                                                                        dtype=torch.float, device=config.device))
-        val_acc = self.accuracy_calculate(val_perform, torch.tensor(dic_data["validating_type"][:num_test, :, :],
-                                                                    dtype=torch.float, device=config.device))
-        loss_val = self.criterion(val_perform,
+        train_acc = self.accuracy_calculate(train_perform, dic_data["training_type"][:num_test, :, :])
+        val_acc = self.accuracy_calculate(val_perform, dic_data["validating_type"][:num_test, :, :])
+        loss_val = self.criterion(torch.tensor(val_perform, dtype=torch.float, device=config.device),
                                   torch.tensor(dic_data["validating_type"][:num_test, :], dtype=torch.float,
                                                device=config.device))
 
