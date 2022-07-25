@@ -57,16 +57,22 @@ class Transformer_model(nn.Module):
         num_test = 1000
         train_perform = []
         val_perform = []
+        decoder_inputs = dic_data["training_type"]
+        decoder_inputs = np.concatenate((-1 * np.ones((num_test, 1, config.output_size)),
+                                         decoder_inputs[:num_test, :-1, :]), axis=1)
+        val_decoder_inputs = dic_data["validating_type"]
+        val_decoder_inputs = np.concatenate((-1 * np.ones((num_test, 1, config.output_size)),
+                                             val_decoder_inputs[:num_test, :-1, :]), axis=1)
         for i in range(num_test):
             train_out = torch.round(
                 self.Transformer_autoencoder(torch.reshape(torch.tensor(dic_data["training_input"][i, :, :],
                                                                         dtype=torch.float,
                                                                         device=config.device),
                                                            (-1, config.input_num_symbol, config.input_size)),
-                                             torch.reshape(torch.tensor(dic_data["training_input"][i, :, :],
+                                             torch.reshape(torch.tensor(decoder_inputs[i, :, :],
                                                                         dtype=torch.float,
                                                                         device=config.device),
-                                                           (-1, config.input_num_symbol, config.input_size))))
+                                                           (-1, config.input_num_symbol, config.embedded_dim))))
             train_perform.append(train_out.detach().cpu().numpy())
 
             val_out = torch.round(
@@ -74,10 +80,10 @@ class Transformer_model(nn.Module):
                                                                         dtype=torch.float,
                                                                         device=config.device),
                                                            (-1, config.input_num_symbol, config.input_size)),
-                                             torch.reshape(torch.tensor(dic_data["validating_input"][i, :, :],
+                                             torch.reshape(torch.tensor(val_decoder_inputs[i, :, :],
                                                                         dtype=torch.float,
                                                                         device=config.device),
-                                                           (-1, config.input_num_symbol, config.input_size))))
+                                                           (-1, config.input_num_symbol, config.embedded_dim))))
             val_perform.append(val_out.detach().cpu().numpy())
 
         train_perform = torch.reshape(torch.tensor(np.array(train_perform), device=config.device, dtype=torch.float),
