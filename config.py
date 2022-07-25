@@ -23,9 +23,9 @@ coder_act = 'relu'
 MLP_act = 'relu'
 
 ##-----file direction--
-training_data_path = './Data/mtx_32f_B_20_25dB.csv'
-testing_data_path = './Data/mtx_32f_B_20_25dB.csv'
-validation_data_path = './Data/mtx_32f_B_20_25dB.csv'
+training_data_path = './Data/mtx_32f_B_15_20dB_small.csv'
+testing_data_path = './Data/mtx_32f_B_15_20dB_small.csv'
+validation_data_path = './Data/mtx_32f_B_15_20dB_small.csv'
 model_dir = './Model'
 Transformer_dir = model_dir + '/Transformer_whole'
 Transformer_weight_save_dir = Transformer_dir + '/weight_mtx'
@@ -37,8 +37,8 @@ encoder_dense_dim = 1024
 encoder_norm_mode = 'layer'     #'batch' or 'layer'
 ##-----decoder---------
 num_decoder_block = 4
-decoder_drop_rate = 0.1
-decoder_dense_dim = 2048
+decoder_drop_rate = 0.5
+decoder_dense_dim = 1024
 decoder_norm_mode = 'layer'     #'batch' or 'layer'
 ##-----LSTM---------
 LSTM_num_layers = 2

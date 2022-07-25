@@ -75,7 +75,7 @@ class Transformer_Decoder_Block(nn.Module):
         i = torch.arange(0, num_seq, device=config.device)[:, None]
         j = torch.arange(0, num_seq, device=config.device)
         mask = i >= j
-        return mask
+        return ~mask
 
     def forward(self, inputs, encoder_outputs):
         mask_decoder = self.decoder_mask(inputs)
