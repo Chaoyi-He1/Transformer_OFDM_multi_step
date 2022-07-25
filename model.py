@@ -175,7 +175,7 @@ class Transformer_model(nn.Module):
 
             print('Epoch {:d} Loss {:.6f} Train Accuracy {:.6f} Val Accuracy {:.6f} Duration {:.3f} seconds.'
                   .format(epoch, loss_ / num_batches, train_acc, val_acc, duration))
-            if val_acc >= max_val_acc:
+            if val_acc > max_val_acc:
                 max_val_acc = val_acc
                 self.save(epoch)
 
