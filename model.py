@@ -41,7 +41,7 @@ class Transformer_model(nn.Module):
         # predict = np.round(predict)
         for i in range(predict.shape[0]):
             a = np.sum(predict[i, :, 0:32], axis=1)
-            b = sum(predict[i, 0, 0:32])
+            b = sum(predict[i, 3, 0:32])
             predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 0:32] = np.ones(32)
             predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 0:32] = np.zeros(32)
 
@@ -56,7 +56,7 @@ class Transformer_model(nn.Module):
         return acc / predict.shape[0]
 
     def info_for_tensorboard(self, dic_data, loss_train, epochs):
-        num_test = 1000
+        num_test = 100
         train_perform = []
         val_perform = []
         decoder_inputs = dic_data["training_type"]
