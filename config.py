@@ -3,7 +3,7 @@ import torch
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 input_size = int(96 * 2)
 input_num_symbol = 32
-batch_size = 512
+batch_size = 128
 output_size = 96
 vec_size = input_size * input_num_symbol
 type_position = vec_size
@@ -18,7 +18,7 @@ max_epoch = 100
 embedded_dim = int(input_size / 2)
 num_heads = 8
 
-acc_print_num_frame = 8
+acc_print_num_frame = 1
 
 ##-----activation-----
 coder_act = 'relu'

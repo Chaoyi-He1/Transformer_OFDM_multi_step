@@ -43,11 +43,11 @@ class Transformer_model(nn.Module):
             predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 0:32] = np.ones(32)
             predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 0:32] = np.zeros(32)
 
-            predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 32:64] = np.ones(32)
-            predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 32:64] = np.zeros(32)
+            predict[i, np.sum(predict[i, :, 32:64], axis=1) >= 16, 32:64] = np.ones(32)
+            predict[i, np.sum(predict[i, :, 32:64], axis=1) < 16, 32:64] = np.zeros(32)
 
-            predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 64:96] = np.ones(32)
-            predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 64:96] = np.zeros(32)
+            predict[i, np.sum(predict[i, :, 64:96], axis=1) >= 16, 64:96] = np.ones(32)
+            predict[i, np.sum(predict[i, :, 64:96], axis=1) < 16, 64:96] = np.zeros(32)
 
             a = predict[i][:predict_frame_num, :]
             b = target[i][:predict_frame_num, :]
