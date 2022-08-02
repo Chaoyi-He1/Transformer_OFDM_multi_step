@@ -53,7 +53,7 @@ class Transformer_model(nn.Module):
                 acc += 1
         return acc / predict.shape[0]
 
-    def info_for_tensorboard(self, dic_data, loss_train, epochs, acc_print_num_frame):
+    def info_for_tensorboard(self, dic_data, loss_train, epochs):
         num_test = 100
         train_perform = []
         val_perform = []
@@ -109,7 +109,7 @@ class Transformer_model(nn.Module):
             self.writer.add_scalars('Accuracy for ' + str(predict_frame_num) + 'frames prediction',
                                     {'Train Accuracy': train_acc, 'Val Accuracy': val_acc}, epochs)
 
-            if predict_frame_num == acc_print_num_frame:
+            if predict_frame_num == config.acc_print_num_frame:
                 train_acc_return = train_acc
                 val_acc_return = val_acc
         return train_acc_return, val_acc_return, loss_val
@@ -180,8 +180,7 @@ class Transformer_model(nn.Module):
                 print('Batch {:d}/{:d} Loss {:.6f}'.format(i, num_batches, loss), end='\r', flush=True)
 
             duration = time.time() - start_time
-            train_acc, val_acc, loss_val = self.info_for_tensorboard(dic_data, loss_.item() / num_batches, epochs=epoch,
-                                                                     acc_print_num_frame=config.acc_print_num_frame)
+            train_acc, val_acc, loss_val = self.info_for_tensorboard(dic_data, loss_.item() / num_batches, epochs=epoch)
 
             print('Epoch {:d}; Train Loss {:.6f}; Val Loss {:.6f}; '
                   'Train Accuracy {:.6f}; Val Accuracy {:.6f}; Duration {:.3f} seconds.'
