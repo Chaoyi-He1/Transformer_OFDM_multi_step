@@ -40,8 +40,6 @@ class Transformer_model(nn.Module):
         acc = 0
         # predict = np.round(predict)
         for i in range(predict.shape[0]):
-            a = np.sum(predict[i, :, 0:32], axis=1)
-            b = sum(predict[i, 3, 0:32])
             predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 0:32] = np.ones(32)
             predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 0:32] = np.zeros(32)
 
@@ -51,6 +49,9 @@ class Transformer_model(nn.Module):
             predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 64:96] = np.ones(32)
             predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 64:96] = np.zeros(32)
 
+            a = predict[i][:predict_frame_num, :]
+            b = target[i][:predict_frame_num, :]
+            c = (a == b).all()
             if (predict[i][:predict_frame_num, :] == target[i][:predict_frame_num, :]).all():
                 acc += 1
         return acc / predict.shape[0]
