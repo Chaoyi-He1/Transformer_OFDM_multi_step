@@ -18,6 +18,8 @@ max_epoch = 100
 embedded_dim = int(input_size / 2)
 num_heads = 8
 
+acc_print_num_frame = 8
+
 ##-----activation-----
 coder_act = 'relu'
 MLP_act = 'relu'
