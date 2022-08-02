@@ -36,7 +36,7 @@ class Transformer_model(nn.Module):
         self.Transformer_autoencoder.load_state_dict(ckpt, strict=True)
         print("Restored model parameters from {}".format(checkpoint_name))
 
-    def accuracy_calculate(self, predict, target):
+    def accuracy_calculate(self, predict, target, predict_frame_num):
         acc = 0
         # predict = np.round(predict)
         for i in range(predict.shape[0]):
@@ -51,7 +51,7 @@ class Transformer_model(nn.Module):
             predict[i, np.sum(predict[i, :, 0:32], axis=1) >= 16, 64:96] = np.ones(32)
             predict[i, np.sum(predict[i, :, 0:32], axis=1) < 16, 64:96] = np.zeros(32)
 
-            if (predict[i] == target[i]).all():
+            if (predict[i][:predict_frame_num, :] == target[i][:predict_frame_num, :]).all():
                 acc += 1
         return acc / predict.shape[0]
 
@@ -93,16 +93,21 @@ class Transformer_model(nn.Module):
         val_perform = np.reshape(np.array(val_perform),
                                  newshape=(num_test, config.input_num_symbol, config.output_size))
 
-        train_acc = self.accuracy_calculate(train_perform, dic_data["training_type"][:num_test, :, :])
-        val_acc = self.accuracy_calculate(val_perform, dic_data["validating_type"][:num_test, :, :])
         loss_val = self.criterion(torch.tensor(val_perform, dtype=torch.float, device=config.device),
                                   torch.tensor(dic_data["validating_type"][:num_test, :], dtype=torch.float,
                                                device=config.device))
 
         self.writer.add_scalars('Loss', {'Train Loss': loss_train,
                                          'Val Loss': loss_val}, epochs)
-        self.writer.add_scalars('Accuracy', {'Train Accuracy': train_acc,
-                                             'Val Accuracy': val_acc}, epochs)
+
+        for predict_frame_num in [1, 2, 4, 8, 16, 32]:
+            train_acc = self.accuracy_calculate(train_perform, dic_data["training_type"][:num_test, :, :],
+                                                predict_frame_num)
+            val_acc = self.accuracy_calculate(val_perform, dic_data["validating_type"][:num_test, :, :],
+                                              predict_frame_num)
+
+            self.writer.add_scalars('Accuracy for ' + str(predict_frame_num) + 'frames prediction',
+                                    {'Train Accuracy': train_acc, 'Val Accuracy': val_acc}, epochs)
         return train_acc, val_acc
 
     def train(self, dic_data):
