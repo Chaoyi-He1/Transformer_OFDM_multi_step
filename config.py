@@ -13,12 +13,12 @@ sig_shape = [-1, input_num_symbol, input_size]
 weight_decay = 0.8
 learning_rate = 0.1
 save_interval = 100
-max_epoch = 100
+max_epoch = 300
 
 embedded_dim = int(input_size / 2)
 num_heads = 8
 
-acc_print_num_frame = 32
+acc_print_num_frame = 24
 
 ##-----activation-----
 coder_act = 'relu'
@@ -27,7 +27,7 @@ MLP_act = 'relu'
 ##-----file direction--
 training_data_path = './Data/mtx_32f_B_15_20dB_small.csv'
 testing_data_path = './Data/mtx_32f_B_20_25dB.csv'
-validation_data_path = './Data/mtx_32f_B_15_20dB_small.csv'
+validation_data_path = './Data/mtx_32f_B_30_35dB_small.csv'
 model_dir = './Model'
 Transformer_dir = model_dir + '/Transformer_whole'
 Transformer_weight_save_dir = Transformer_dir + '/weight_mtx'

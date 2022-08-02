@@ -60,6 +60,8 @@ class Transformer_model(nn.Module):
         num_test = 100
         train_perform = []
         val_perform = []
+        train_acc_return = 0
+        val_acc_return = 0
         decoder_inputs = dic_data["training_type"]
         decoder_inputs = np.concatenate((-1 * np.ones((num_test, 1, config.output_size)),
                                          decoder_inputs[:num_test, :-1, :]), axis=1)
@@ -101,7 +103,7 @@ class Transformer_model(nn.Module):
         self.writer.add_scalars('Loss', {'Train Loss': loss_train,
                                          'Val Loss': loss_val}, epochs)
 
-        for predict_frame_num in [1, 2, 4, 8, 16, 32]:
+        for predict_frame_num in [1, 2, 4, 8, 16, 24, 32]:
             train_acc = self.accuracy_calculate(train_perform, dic_data["training_type"][:num_test, :, :],
                                                 predict_frame_num)
             val_acc = self.accuracy_calculate(val_perform, dic_data["validating_type"][:num_test, :, :],
@@ -113,7 +115,7 @@ class Transformer_model(nn.Module):
             if predict_frame_num == acc_print_num_frame:
                 train_acc_return = train_acc
                 val_acc_return = val_acc
-        return train_acc_return, val_acc_return
+        return train_acc_return, val_acc_return, loss_val
 
     def train(self, dic_data):
         self.Transformer_autoencoder.train()
@@ -181,11 +183,12 @@ class Transformer_model(nn.Module):
                 print('Batch {:d}/{:d} Loss {:.6f}'.format(i, num_batches, loss), end='\r', flush=True)
 
             duration = time.time() - start_time
-            train_acc, val_acc = self.info_for_tensorboard(dic_data, loss_.item() / num_batches, epochs=epoch,
-                                                           acc_print_num_frame=config.acc_print_num_frame)
+            train_acc, val_acc, loss_val = self.info_for_tensorboard(dic_data, loss_.item() / num_batches, epochs=epoch,
+                                                                     acc_print_num_frame=config.acc_print_num_frame)
 
-            print('Epoch {:d} Loss {:.6f} Train Accuracy {:.6f} Val Accuracy {:.6f} Duration {:.3f} seconds.'
-                  .format(epoch, loss_ / num_batches, train_acc, val_acc, duration))
+            print('Epoch {:d}; Train Loss {:.6f}; Val Loss {:.6f}; '
+                  'Train Accuracy {:.6f}; Val Accuracy {:.6f}; Duration {:.3f} seconds.'
+                  .format(epoch, loss_ / num_batches, loss_val, train_acc, val_acc, duration))
             if val_acc > max_val_acc:
                 max_val_acc = val_acc
                 self.save(epoch)
