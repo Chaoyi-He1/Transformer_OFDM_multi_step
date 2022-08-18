@@ -193,7 +193,6 @@ class Transformer_model(nn.Module):
 
     def test_or_validate(self, dic_data, checkpoint_num_list):
         encoder_inputs = dic_data["testing_input"]
-        decoder_inputs = dic_data["testing_input"]
         y = dic_data["testing_type"]
 
         self.Transformer_autoencoder.eval()
@@ -205,17 +204,29 @@ class Transformer_model(nn.Module):
 
             preds = []
             for i in tqdm(range(encoder_inputs.shape[0])):
-                encoder_inter = [encoder_inputs[i]]
-                decoder_inter = [decoder_inputs[i]]
-                out = self.Transformer_autoencoder(torch.tensor(encoder_inter, dtype=torch.float, device=config.device),
-                                                   torch.tensor(decoder_inter, dtype=torch.float, device=config.device))
-                out = torch.argmax(out, dim=-1)
-                preds.append(out.detach().cpu().numpy())
+                encoder_inter = np.array([encoder_inputs[i]])
+                decoder_inter = -1 * np.ones((1, 1, config.output_size))
+                # decoder_inter[0, 0, :] = -1
+                decoder_out = []
+                for frame in range(config.input_num_symbol):
+                    out = self.Transformer_autoencoder(torch.tensor(encoder_inter, dtype=torch.float,
+                                                                    device=config.device),
+                                                       torch.tensor(decoder_inter, dtype=torch.float,
+                                                                    device=config.device))
+                    if frame != config.input_num_symbol - 1:
+                        decoder_inter = np.concatenate((decoder_inter,
+                                                        torch.round(torch.reshape(out[0, frame, :],
+                                                                                  shape=(1, 1, config.output_size)))
+                                                        .detach().cpu().numpy()),
+                                                       axis=1)
+                    decoder_out.append(torch.round(out[0, frame, :]).detach().cpu().numpy())
+                out = np.reshape(np.asarray(decoder_out), newshape=(1, config.input_num_symbol, config.output_size))
+                preds.append(out)
 
-            preds = np.reshape(preds, (-1, config.output_size))
+            preds = np.reshape(preds, (-1, config.input_num_symbol,  config.output_size))
             sum = 0
             for i in range(y.shape[0]):
-                if preds[i] == (y[i]):
+                if (preds[i] == (y[i])).all():
                     sum += 1
             accuracy = sum / y.shape[0]
             print('Test accuracy: {:.4f}'.format(accuracy))

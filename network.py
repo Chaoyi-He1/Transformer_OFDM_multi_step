@@ -4,6 +4,7 @@ from torch import nn
 import torch
 
 
+
 class Transformer_Encoder_Block(nn.Module):
     def __init__(self, act_mode):
         super(Transformer_Encoder_Block, self).__init__()
@@ -83,7 +84,7 @@ class Transformer_Decoder_Block(nn.Module):
                                                  need_weights=False)[0]
         outputs_atten_1 = self.norm_1(outputs_atten_1 + inputs)
         outputs_atten_2 = self.attention_layer_2(query=outputs_atten_1, key=encoder_outputs, value=encoder_outputs,
-                                                 attn_mask=mask_decoder, need_weights=False)[0]
+                                                 need_weights=False)[0]
         outputs_atten_2 = self.norm_2(outputs_atten_2 + outputs_atten_1)
         outputs = self.MLP_1(outputs_atten_2)
         if self.act_mode == 'sigmoid':

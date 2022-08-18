@@ -33,14 +33,14 @@ Transformer_dir = model_dir + '/Transformer_whole'
 Transformer_weight_save_dir = Transformer_dir + '/weight_mtx'
 
 ##-----encoder---------
-num_encoder_block = 4
+num_encoder_block = 8
 encoder_drop_rate = 0.5
-encoder_dense_dim = 1024
+encoder_dense_dim = 2048
 encoder_norm_mode = 'layer'     #'batch' or 'layer'
 ##-----decoder---------
-num_decoder_block = 4
+num_decoder_block = 8
 decoder_drop_rate = 0.5
-decoder_dense_dim = 1024
+decoder_dense_dim = 2018
 decoder_norm_mode = 'layer'     #'batch' or 'layer'
 ##-----LSTM---------
 LSTM_num_layers = 2
